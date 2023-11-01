@@ -28,7 +28,7 @@ prices_scaled = scaler.fit_transform(prices.reshape(-1, 1))
 train_size = int(len(prices) * 0.8)
 train_data = prices_scaled[:train_size]
 test_data = prices_scaled[train_size:]
-
+print(train_data)
 # Paso 3: Crear secuencias de datos para el modelo LSTM
 
 def create_sequences(data, sequence_length):
@@ -38,14 +38,16 @@ def create_sequences(data, sequence_length):
         y.append(data[i+sequence_length])
     return np.array(X), np.array(y)
 
-sequence_length = 10  # Longitud de la secuencia
+sequence_length = 12  # Longitud de la secuencia
 X_train, y_train = create_sequences(train_data, sequence_length)
 X_test, y_test = create_sequences(test_data, sequence_length)
+print("Forma de X_train:", X_train.shape)
 
 # Paso 4: Construir y entrenar el modelo LSTM
+input_shape = (X_train.shape[1], X_train.shape[2])
 
 model = Sequential()
-model.add(LSTM(units=50, return_sequences=True, input_shape=(X_train.shape[1], X_train.shape[2])))
+model.add(LSTM(units=50, return_sequences=True, input_shape= input_shape))
 model.add(LSTM(units=50))
 model.add(Dense(1))
 
