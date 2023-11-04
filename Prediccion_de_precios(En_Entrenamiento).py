@@ -40,9 +40,28 @@ model.add(Dropout(0.2))                 # Agregamos una capa de Dropout para reg
 model.add(LSTM(units=50))               # Agregamos otra capa LSTM.
 model.add(Dense(1))                     # Agregamos una capa densa con una sola neurona.
 
-model.compile(optimizer='adam', loss='mean_squared_error')   # Compilamos el modelo.
+# Compile el modelo con run_eagerly=True
+model.compile(optimizer='adam', loss='mean_squared_error', run_eagerly=True)
 
-model.fit(X_train, y_train, epochs=50, batch_size=64)   # Entrenamos el modelo.
+# Entrenamos el modelo
+model.fit(X_train, y_train, epochs=50, batch_size=64)
+
+# Paso 5: Hacer predicciones y evaluar el modelo
+y_pred = model.predict(X_test)   # Realizamos predicciones en los datos de prueba.
+
+# Desescalar las predicciones para obtener los valores reales
+y_pred = scaler.inverse_transform(y_pred)  # Desescalamos las predicciones.
+y_test = scaler.inverse_transform(y_test)    # Desescalamos los datos de prueba.
+
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score   # Importamos métricas.
+
+mse = mean_squared_error(y_test, y_pred)   # Calculamos el error cuadrático medio.
+mae = mean_absolute_error(y_test, y_pred)  # Calculamos el error absoluto medio.
+r2 = r2_score(y_test, y_pred)             # Calculamos el coeficiente de determinación.
+
+print(f'MSE: {mse}')   # Imprimimos el error cuadrático medio.
+print(f'MAE: {mae}')   # Imprimimos el error absoluto medio.
+print(f'R-squared: {r2}')   # Imprimimos el coeficiente de determinación.
 
 # Paso 5: Hacer predicciones y evaluar el modelo
 y_pred = model.predict(X_test)   # Realizamos predicciones en los datos de prueba.
